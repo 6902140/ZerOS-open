@@ -73,11 +73,17 @@ endif
 
 LDFLAGS = -z max-page-size=4096
 
+
+#kernel目标依赖项目
+#这是一个编译链接指令，并且指定的连接脚本为kernel.ld 生成的目标是kernel
+#将二进制反汇编为汇编指令
+#这条指令的含义是将kernel中的符号表提取出来，存入kernel.sym中
+#sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d': 这是一个 sed 命令，用于对前一个命令的输出结果进行处理。sed 是一个流式文本编辑器，可以用来进行文本处理和转换。
 $K/kernel: $(OBJS) $K/kernel.ld $U/initcode
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o $K/kernel $(OBJS) 
-	$(OBJDUMP) -S $K/kernel > $K/kernel.asm
+	$(OBJDUMP) -S $K/kernel > $K/kernel.asm 
 	$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
-
+	
 $U/initcode: $U/initcode.S
 	$(CC) $(CFLAGS) -march=rv64g -nostdinc -I. -Ikernel -c $U/initcode.S -o $U/initcode.o
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0 -o $U/initcode.out $U/initcode.o
@@ -106,6 +112,8 @@ $U/_forktest: $U/forktest.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $U/_forktest $U/forktest.o $U/ulib.o $U/usys.o
 	$(OBJDUMP) -S $U/_forktest > $U/forktest.asm
 
+
+#编译生成mkfs可执行文件
 mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 	gcc -Werror -Wall -I. -o mkfs/mkfs mkfs/mkfs.c
 
@@ -133,6 +141,7 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 
+#执行mkfs可执行文件生成fs.img
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
 

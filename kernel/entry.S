@@ -16,6 +16,7 @@ _entry:
         mul a0, a0, a1
         add sp, sp, a0
         # jump to start() in start.c
+        # 设置完成cpu的栈空间分配之后就可以开始跳转了
         call start
 spin:
         j spin

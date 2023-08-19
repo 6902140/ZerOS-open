@@ -8,6 +8,9 @@ SECTIONS
    * where qemu's -kernel jumps.
    */
   . = 0x80000000;
+  /*
+  这里是指定了entry.S的入口
+  */
 
   .text : {
     *(.text .text.*)

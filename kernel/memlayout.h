@@ -28,7 +28,7 @@
 // core local interruptor (CLINT), which contains the timer.
 #define CLINT 0x2000000L
 #define CLINT_MTIMECMP(hartid) (CLINT + 0x4000 + 8*(hartid))
-#define CLINT_MTIME (CLINT + 0xBFF8) // cycles since boot.
+#define CLINT_MTIME (CLINT + 0xBFF8) // cycles since boot.表示 CLINT（Core Local Interruptor）模块中的 MTIME 寄存器的地址偏移。
 
 // qemu puts platform-level interrupt controller (PLIC) here.
 #define PLIC 0x0c000000L
